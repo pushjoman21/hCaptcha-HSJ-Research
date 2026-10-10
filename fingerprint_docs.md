@@ -1,4 +1,7 @@
-# hCaptcha HSJ Fingerprint 
+# hCaptcha HSJ Fingerprint
+
+> **Archived research · Educational use only.** These notes are outdated and may
+> not reflect current hCaptcha versions.
 
 Event ids are runtime hashes of the internal names; they are stable across
 current builds, so this table is reusable. Values come in three classes:

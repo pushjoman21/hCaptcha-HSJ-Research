@@ -1,8 +1,11 @@
-# hCaptcha `vmdata` — Reverse Engineering
+# hCaptcha `vmdata` — Format Analysis
 
-What you need to know to forge `vmdata` (and the `arh` fingerprint event, which
-is the same thing). Scope: **only the vmdata VM and its output format** — not the
-rest of the motion payload.
+> **Archived research · Educational use only.** These notes are outdated and may
+> not reflect current hCaptcha versions.
+
+Documentation of the `vmdata` structure (and the `arh` fingerprint event, which
+uses the same serialization). Scope: **only the vmdata VM and its output format**,
+not the rest of the motion payload.
 
 Ground truth: a captured **steam_signup** request (checkbox) + a decrypted real
 **epicgames_login** fingerprint (invisible), Chrome **148.0.7778.96**.
@@ -28,8 +31,8 @@ Two independent things share this exact serialization:
 - the `motionData.vmdata` field (plaintext form field), and
 - the encrypted-fingerprint event **`2425213868`** ("arh").
 
-They are **byte-identical** — same frames, same signature. Build once, reuse.
-(A common mistake is truncating arh to `vmdata[0]`; it is the whole thing.)
+They are **byte-identical** — same frames, same signature. 
+`arh` contains the complete `vmdata` list, not only `vmdata[0]`.
 
 The per-frame `signature` (`[21]`, base64 of 96 random bytes) is **the same
 across all frames of one capture** — it's the session signature, not per-frame.
@@ -132,8 +135,3 @@ The hsj.js is identical across current builds (epic / steam / discord — only t
 SRI hash differs), so this frame format and the event ids are the same for every
 sitekey. Per-site variation lives only in `url`/`host`/`href`, `pel`,
 `selectors`, widget sizes, and `exec` mode (checkbox vs invisible).
-
-Implemented in `modules/motiondata.py`: `_build_vmdata` (checkbox 22-element),
-`_build_vmdata_invisible` (13-element), `_frame22`, `_channel_hashes`,
-`_ws_frame`; consumed as `arh` in `modules/events.py` (`_build_arh`).
-```
